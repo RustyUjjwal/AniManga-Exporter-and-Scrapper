@@ -366,6 +366,15 @@ export default function ListGridTable({
               const progress = currentType === "anime" ? item.num_watched_episodes : item.num_read_chapters;
               const mType = currentType === "anime" ? item.anime_media_type_string : item.manga_media_type_string;
               const malId = currentType === "anime" ? item.anime_id : item.manga_id;
+              const anilistId = item.anilist_id;
+              
+              const malHref = (platform === 'anilist' && malId === anilistId) 
+                ? `https://myanimelist.net/${currentType}.php?q=${encodeURIComponent(title)}` 
+                : `https://myanimelist.net/${currentType}/${malId}`;
+                
+              const anilistHref = (platform === 'anilist' && anilistId)
+                ? `https://anilist.co/${currentType}/${anilistId}`
+                : `https://anilist.co/search/${currentType}?search=${encodeURIComponent(title)}`;
               
               // Completion percentage
               const percent = unitCount > 0 ? Math.min(Math.round((progress / unitCount) * 100), 100) : 0;
@@ -398,7 +407,7 @@ export default function ListGridTable({
                     {/* Dark overlay on hover */}
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-end pb-4 gap-2">
                       <a
-                        href={platform === 'mal' ? `https://myanimelist.net/${currentType}/${malId}` : `https://myanimelist.net/${currentType}.php?q=${encodeURIComponent(title)}`}
+                        href={malHref}
                         target="_blank"
                         rel="noreferrer"
                         className="text-[10px] font-semibold text-white bg-app-accent/90 backdrop-blur-sm px-2.5 py-1 rounded-md border border-white/10 flex items-center justify-center gap-1 hover:bg-app-accent shadow-sm w-[85%]"
@@ -406,7 +415,7 @@ export default function ListGridTable({
                         MAL Profile <ExternalLink className="w-2.5 h-2.5" />
                       </a>
                       <a
-                        href={platform === 'anilist' ? `https://anilist.co/${currentType}/${malId}` : `https://anilist.co/search/${currentType}?search=${encodeURIComponent(title)}`}
+                        href={anilistHref}
                         target="_blank"
                         rel="noreferrer"
                         className="text-[10px] font-semibold text-white bg-app-accent/90 backdrop-blur-sm px-2.5 py-1 rounded-md border border-white/10 flex items-center justify-center gap-1 hover:bg-app-accent shadow-sm w-[85%]"
@@ -494,6 +503,15 @@ export default function ListGridTable({
                   const progress = currentType === "anime" ? item.num_watched_episodes : item.num_read_chapters;
                   const mType = currentType === "anime" ? item.anime_media_type_string : item.manga_media_type_string;
                   const malId = currentType === "anime" ? item.anime_id : item.manga_id;
+                  const anilistId = item.anilist_id;
+                  
+                  const malHref = (platform === 'anilist' && malId === anilistId) 
+                    ? `https://myanimelist.net/${currentType}.php?q=${encodeURIComponent(title)}` 
+                    : `https://myanimelist.net/${currentType}/${malId}`;
+                    
+                  const anilistHref = (platform === 'anilist' && anilistId)
+                    ? `https://anilist.co/${currentType}/${anilistId}`
+                    : `https://anilist.co/search/${currentType}?search=${encodeURIComponent(title)}`;
 
                   return (
                     <motion.tr
@@ -561,7 +579,7 @@ export default function ListGridTable({
                       {/* Links external profile */}
                       <td className="py-2.5 px-5 text-right space-x-1 whitespace-nowrap">
                         <a
-                          href={platform === 'mal' ? `https://myanimelist.net/${currentType}/${malId}` : `https://myanimelist.net/${currentType}.php?q=${encodeURIComponent(title)}`}
+                          href={malHref}
                           target="_blank"
                           rel="noreferrer"
                           className="text-app-text-muted hover:text-app-accent transition-colors duration-150 p-1 hover:bg-app-bg border border-transparent hover:border-app-border rounded-md inline-block"
@@ -570,7 +588,7 @@ export default function ListGridTable({
                           <span className="text-[10px] font-bold tracking-tighter">MAL</span>
                         </a>
                         <a
-                          href={platform === 'anilist' ? `https://anilist.co/${currentType}/${malId}` : `https://anilist.co/search/${currentType}?search=${encodeURIComponent(title)}`}
+                          href={anilistHref}
                           target="_blank"
                           rel="noreferrer"
                           className="text-app-text-muted hover:text-app-accent transition-colors duration-150 p-1 hover:bg-app-bg border border-transparent hover:border-app-border rounded-md inline-block"
