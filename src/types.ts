@@ -7,6 +7,7 @@ export interface RawAnimeItem {
   anime_num_episodes: number;
   anime_airing_status: number; // 1: Airing, 2: Finished, 3: Not Yet Aired
   anime_id: number;
+  anilist_id?: number;
   anime_image_path: string;
   anime_media_type_string: string; // "TV", "Movie", "OVA", "Special", etc.
   is_rewatching: number;
@@ -26,6 +27,7 @@ export interface RawMangaItem {
   manga_num_chapters: number;
   manga_publishing_status: number; // 1: Publishing, 2: Finished, etc.
   manga_id: number;
+  anilist_id?: number;
   manga_image_path: string;
   manga_media_type_string: string; // "Manga", "Novel", "One-shot", etc.
   start_date_string: string | null;
