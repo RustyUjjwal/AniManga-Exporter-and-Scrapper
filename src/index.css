@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-app-bg: var(--theme-bg);
+  --color-app-surface: var(--theme-surface);
+  --color-app-surface-hover: var(--theme-surface-hover);
+  
+  --color-app-border-strong: var(--theme-border-strong);
+  --color-app-border: var(--theme-border);
+  
+  --color-app-heading: var(--theme-heading);
+  --color-app-text: var(--theme-text);
+  --color-app-text-muted: var(--theme-text-muted);
+  --color-app-text-faint: var(--theme-text-faint);
+  
+  --color-app-accent: var(--theme-accent);
+  --color-app-accent-hover: var(--theme-accent-hover);
+  --color-app-error: var(--theme-error);
+}
+
+@layer base {
+  :root {
+    /* PaperColor Light */
+    --theme-bg: #eeeeee;
+    --theme-surface: #ffffff;
+    --theme-surface-hover: #f5f5f5;
+    
+    --theme-border-strong: #b0b0b0;
+    --theme-border: #d0d0d0;
+    
+    --theme-heading: #111111;
+    --theme-text: #444444;
+    --theme-text-muted: #878787;
+    --theme-text-faint: #a0a0a0;
+    
+    --theme-accent: #005f87;
+    --theme-accent-hover: #004d73;
+    --theme-error: #d7005f;
+  }
+
+  .dark {
+    /* GitHub Dark */
+    --theme-bg: #0d1117;
+    --theme-surface: #161b22;
+    --theme-surface-hover: #21262d;
+    
+    --theme-border-strong: #8b949e;
+    --theme-border: #30363d;
+    
+    --theme-heading: #f0f6fc;
+    --theme-text: #c9d1d9;
+    --theme-text-muted: #8b949e;
+    --theme-text-faint: #6e7681;
+    
+    --theme-accent: #58a6ff;
+    --theme-accent-hover: #388bfd;
+    --theme-error: #f85149;
+  }
+}
