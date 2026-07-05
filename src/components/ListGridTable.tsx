@@ -23,6 +23,8 @@ interface ListGridTableProps {
   platform: PlatformType;
   nameLanguage: "romaji" | "english";
   setNameLanguage: React.Dispatch<React.SetStateAction<"romaji" | "english">>;
+  /** Called whenever the active search/status/format filters change the visible set. */
+  onFilteredListChange?: (list: (RawAnimeItem | RawMangaItem)[]) => void;
 }
 
 export default function ListGridTable({
@@ -32,6 +34,7 @@ export default function ListGridTable({
   platform,
   nameLanguage,
   setNameLanguage,
+  onFilteredListChange,
 }: ListGridTableProps) {
   const [viewMode, setViewMode] = useState<"table" | "grid">("grid");
   const [searchQuery, setSearchQuery] = useState("");
@@ -174,6 +177,12 @@ export default function ListGridTable({
 
     return filtered;
   }, [animeList, mangaList, currentType, searchQuery, selectedStatus, selectedMediaType, sortBy, nameLanguage]);
+
+  // Surface the filtered+sorted (but not yet paginated) list to the parent,
+  // so export actions can offer "just what's currently visible".
+  useEffect(() => {
+    onFilteredListChange?.(processedList);
+  }, [processedList, onFilteredListChange]);
 
   // Pagination bounds
   const totalPages = Math.max(Math.ceil(processedList.length / itemsPerPage), 1);

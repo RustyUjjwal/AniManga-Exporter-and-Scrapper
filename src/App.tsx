@@ -13,8 +13,7 @@ import {
   ShieldCheck,
   AlertCircle,
   Sun,
-  Moon,
-  Library
+  Moon
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import ScrapeConsole, { PlatformType } from "./components/ScrapeConsole";
@@ -35,6 +34,9 @@ export default function App() {
   const [scrapedType, setScrapedType] = useState<ListType>("anime");
   const [scrapedPlatform, setScrapedPlatform] = useState<PlatformType>("mal");
   const [error, setError] = useState<string | null>(null);
+  // Mirrors whatever ListGridTable currently has filtered/sorted into view,
+  // so ExportControls can offer "export just what I'm looking at".
+  const [filteredList, setFilteredList] = useState<(RawAnimeItem | RawMangaItem)[]>([]);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [nameLanguage, setNameLanguage] = useState<"romaji" | "english">(() => {
     try {
@@ -181,8 +183,8 @@ export default function App() {
       <header className="border-b border-app-border-strong bg-app-bg/80 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-6 py-4 transition-colors duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-app-accent flex items-center justify-center shadow-lg shadow-app-accent/20 shrink-0">
-              <Library className="w-4.5 h-4.5 text-app-surface" />
+            <div className="w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-app-accent/20 shrink-0">
+              <img src="/favicon.svg" alt="AniManga Exporter logo" className="w-full h-full object-cover" />
             </div>
             <div>
               <h1 className="text-sm font-bold tracking-tight text-app-heading flex items-center gap-1.5 font-mono whitespace-nowrap">
@@ -328,10 +330,13 @@ export default function App() {
               <ExportControls
                 animeList={animeList}
                 mangaList={mangaList}
+                filteredList={filteredList}
                 currentType={scrapedType}
                 username={scrapedUsername}
                 platform={scrapedPlatform}
                 nameLanguage={nameLanguage}
+                appTheme={theme}
+                avatarUrl={userProfile?.images?.jpg?.image_url}
               />
 
               {/* Data Table Grid List */}
@@ -347,6 +352,7 @@ export default function App() {
                   platform={scrapedPlatform}
                   nameLanguage={nameLanguage}
                   setNameLanguage={setNameLanguage}
+                  onFilteredListChange={setFilteredList}
                 />
               </div>
 

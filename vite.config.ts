@@ -17,6 +17,14 @@ export default defineConfig(() => {
       hmr: process.env.DISABLE_HMR !== 'true',
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
+      // Only used when running the standalone dev-server.ts instead of `netlify dev`
+      // (netlify dev handles /api itself and ignores this).
+      proxy: {
+        '/api': {
+          target: `http://localhost:${process.env.API_PORT || 8787}`,
+          changeOrigin: true,
+        },
+      },
     },
   };
 });

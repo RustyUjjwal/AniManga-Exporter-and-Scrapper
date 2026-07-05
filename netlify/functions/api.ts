@@ -6,7 +6,7 @@ const router = express.Router();
 
 app.use(express.json());
 
-// Caches (Note: These will clear periodically in a serverless environment)
+// Caches 
 const CACHE_EXPIRY = 15 * 60 * 1000;
 const animeCache = new Map<string, { data: any[], timestamp: number }>();
 const mangaCache = new Map<string, { data: any[], timestamp: number }>();
@@ -22,6 +22,48 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 // Health check
 router.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+
+const ALLOWED_IMAGE_HOSTS = new Set([
+  "cdn.myanimelist.net",
+  "s4.anilist.co",
+  "img.anili.st",
+]);
+
+router.get("/image-proxy", async (req, res) => {
+  const imageUrl = typeof req.query.url === "string" ? req.query.url : "";
+  if (!imageUrl) { res.status(400).json({ error: "Missing url parameter" }); return; }
+
+  let parsed: URL;
+  try {
+    parsed = new URL(imageUrl);
+  } catch {
+    res.status(400).json({ error: "Invalid url parameter" });
+    return;
+  }
+
+  if (parsed.protocol !== "https:" || !ALLOWED_IMAGE_HOSTS.has(parsed.hostname)) {
+    res.status(400).json({ error: "Host not allowed" });
+    return;
+  }
+
+  try {
+    const upstream = await fetch(parsed.toString(), { headers: HEADERS });
+    if (!upstream.ok) {
+      res.status(upstream.status).json({ error: `Upstream returned ${upstream.status}` });
+      return;
+    }
+    const contentType = upstream.headers.get("content-type") || "image/jpeg";
+    const buffer = Buffer.from(await upstream.arrayBuffer());
+
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.send(buffer);
+  } catch (err) {
+    res.status(502).json({ error: "Failed to fetch image" });
+  }
 });
 
 // AniList User Profile
@@ -231,8 +273,8 @@ router.get("/scrape/anilist/list/:type/:username", async (req, res) => {
   }
 });
 
-// Mount the router at two paths to ensure local dev and Netlify paths both hit the router
 app.use("/api", router);
 app.use("/.netlify/functions/api", router);
 
-export const handler = serverless(app);
+export { app };
+export const handler = serverless(app, { binary: true });

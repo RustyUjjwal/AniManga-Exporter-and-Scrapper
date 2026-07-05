@@ -207,10 +207,10 @@ export default function ScrapeConsole({
             <div className="flex flex-wrap items-center gap-2 text-xs mt-4">
               <span className="text-app-text-faint font-mono">Example Profile:</span>
               <button
-                onClick={() => handleDemoClick("grimjow22", "anilist")}
+                onClick={() => handleDemoClick("YuluBoss", "mal")}
                 className="bg-app-bg hover:bg-app-surface-hover text-app-text-muted hover:text-app-accent border border-app-border px-2.5 py-1 rounded-md font-mono transition-colors duration-150 cursor-pointer"
               >
-                grimjow22
+                YuluBoss
               </button>
               <span className="text-app-text-faint flex items-center gap-1 ml-1 cursor-help" title="Click to view example data">
                 <HelpCircle className="w-3 h-3" /> Click to view example
