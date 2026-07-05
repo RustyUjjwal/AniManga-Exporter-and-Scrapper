@@ -1,5 +1,7 @@
 # AniManga Exporter 🚀
 
+#The AniList API has been temporarily disabled due to severe stability issues. Please check the announcements channel in the official AniList Discord for more information.
+
 AniManga Exporter is an open-source, web-based tool that lets you effortlessly extract, analyze, and export your public anime or manga lists from MyAnimeList or AniList.
 
 Whether you're looking to back up your data, migrate between platforms, or just flex your stats, this tool provides a fast, beautifully designed interface to get the job done.
