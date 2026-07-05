@@ -4,7 +4,7 @@ AniManga Exporter is an open-source, web-based tool that lets you effortlessly e
 
 Whether you're looking to back up your data, migrate between platforms, or just flex your stats, this tool provides a fast, beautifully designed interface to get the job done.
 
-🌐 **[Try the Live App on Netlify!](https://animanga-exporter.netlify.app/)**
+🌐 **[Try the Live App](https://animanga-exporter-and-scrapper.netlify.app)**
 
 ## ✨ Features
 
