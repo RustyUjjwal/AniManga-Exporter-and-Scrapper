@@ -20,16 +20,18 @@ const HEADERS = {
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+const RETRYABLE_STATUSES = new Set([429, 500, 502, 503, 504]);
+
 async function fetchWithRetry(
   url: string,
   options: RequestInit,
-  maxRetries = 5
+  maxRetries = 6
 ): Promise<Response> {
   let attempt = 0;
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const response = await fetch(url, options);
-    if (response.status !== 429 && response.status !== 503) {
+    if (!RETRYABLE_STATUSES.has(response.status)) {
       return response;
     }
 
@@ -40,7 +42,7 @@ async function fetchWithRetry(
     const parsedRetryAfter = retryAfterHeader ? parseInt(retryAfterHeader, 10) : NaN;
     const waitMs = !isNaN(parsedRetryAfter)
       ? parsedRetryAfter * 1000
-      : Math.min(1000 * 2 ** (attempt - 1), 15000); // 1s, 2s, 4s, 8s, capped at 15s
+      : Math.min(1000 * 2 ** (attempt - 1), 20000); // 1s, 2s, 4s, 8s, 16s, capped at 20s
 
     await delay(waitMs);
   }
@@ -262,7 +264,7 @@ router.get("/scrape/anilist/list/:type/:username", async (req, res) => {
         if (type === "ANIME") {
           return {
             status: malStatus, score: Math.round(item.score || 0), num_watched_episodes: item.progress || 0,
-            anime_title: item.media.title.userPreferred || item.media.title.romaji, anime_num_episodes: item.media.episodes || 0,
+            anime_title: item.media.title.userPreferred || item.media.title.romaji, anime_title_eng: item.media.title.english || item.media.title.userPreferred || item.media.title.romaji, anime_num_episodes: item.media.episodes || 0,
             anime_airing_status: airingStatus, anime_id: item.media.idMal || item.media.id, anilist_id: item.media.id,
             anime_image_path: item.media.coverImage?.large, anime_media_type_string: item.media.format || "TV",
             is_rewatching: item.status === "REPEATING" ? 1 : 0, start_date_string: startDateStr, finish_date_string: finishDateStr
@@ -270,7 +272,7 @@ router.get("/scrape/anilist/list/:type/:username", async (req, res) => {
         } else {
           return {
             status: malStatus, score: Math.round(item.score || 0), num_read_volumes: item.progressVolumes || 0, num_read_chapters: item.progress || 0,
-            manga_title: item.media.title.userPreferred || item.media.title.romaji, manga_num_volumes: item.media.volumes || 0,
+            manga_title: item.media.title.userPreferred || item.media.title.romaji, manga_title_eng: item.media.title.english || item.media.title.userPreferred || item.media.title.romaji, manga_num_volumes: item.media.volumes || 0,
             manga_num_chapters: item.media.chapters || 0, manga_publishing_status: airingStatus, manga_id: item.media.idMal || item.media.id,
             anilist_id: item.media.id, manga_image_path: item.media.coverImage?.large, manga_media_type_string: item.media.format || "Manga",
             start_date_string: startDateStr, finish_date_string: finishDateStr
@@ -281,6 +283,7 @@ router.get("/scrape/anilist/list/:type/:username", async (req, res) => {
       allItems.push(...mappedItems);
       hasNextPage = pageData.pageInfo.hasNextPage;
       page++;
+      
       await delay(1200);
     }
     listCache.set(cacheKey, { data: allItems, timestamp: Date.now() });
