@@ -1,4 +1,4 @@
-# AniManga Exporter 🚀
+# AniManga Exporter And Scrapper 🚀
 
 AniManga Exporter is an open-source, web-based tool that lets you effortlessly extract, analyze, and export your public anime or manga lists from MyAnimeList or AniList.
 
